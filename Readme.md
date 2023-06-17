@@ -8,24 +8,25 @@
 
 ## How to make a Pull Request?
 
-**1.** Start by forking the [**Web3.O.World**](https://github.com/Vikash-8090-Yadav/Web3.0-World) repository. Click on the <a href="https://github.com/Vikash-8090-Yadav/Web3.0-World/fork"><img src="https://i.imgur.com/G4z1kEe.png" height="21" width="21"></a> symbol at the top right corner.
+**1.** Start by forking the  repository. 
 
 **2.** Clone your forked repository:
 
 ```bash
-git clone https://github.com/<your-github-username>/Web3.0-World
+git clone https://github.com/<your-github-username>/repository_name
 ```
 
 **3.** Navigate to the new project directory:
 
 ```bash
-cd Web3.O.World
+cd repository_name
 ```
 
 **4.** Set upstream command:
 
+this is where you will be contributing
 ```bash
-git remote add upstream https://github.com/Vikash-8090-Yadav/Web3.0-World
+git remote add upstream https://github.com/TechieeGeeeks/Patrick_Collins_Foundary_Course
 ```
 
 **5.** Create a new branch:
