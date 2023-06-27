@@ -6,12 +6,12 @@ pragma solidity ^0.8.19;
 import {Script} from "forge-std/Script.sol";
 import {SimpleStorage} from "../src/SimpleStorage.sol";
 
- contract DeploySimpleStorage is Script{
-    function run() external returns(SimpleStorage){    
-    vm.startBroadcast(); 
+contract DeploySimpleStorage is Script {
+    function run() external returns (SimpleStorage) {
+        vm.startBroadcast();
         // Everything that you wanna send as a transaction should be in it
         SimpleStorage simpleStorage = new SimpleStorage();
-    vm.stopBroadcast();
-    return simpleStorage;
+        vm.stopBroadcast();
+        return simpleStorage;
     }
- }
+}
