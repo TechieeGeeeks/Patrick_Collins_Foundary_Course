@@ -1,9 +1,9 @@
   
 ## How to Contribute?
 
-- Take a look at the existing [Issues](https://github.com/Vikash-8090-Yadav/Web3.0-World/issues) 
+- Take a look at the existing [Issues] 
 - Fork the Repo create a branch for any issue that you are working on and commit your work.
-- Create a ** [Pull Request](https://github.com/Vikash-8090-Yadav/Web3.0-World/pulls), which will be promptly reviewed and given suggestions for improvements by the community.
+- Create a ** [Pull Request], which will be promptly reviewed and given suggestions for improvements by the community.
 - Add screenshots or screen captures to your Pull Request to help us understand the effects of the changes that are included in your commits.
 
 ## How to make a Pull Request?
