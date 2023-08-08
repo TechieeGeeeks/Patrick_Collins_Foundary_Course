@@ -36,17 +36,26 @@ contract Raffle{
     // Errors
     // Convention ContractName__ErrorHint__ERROR
     error Raffle__notEnoughEth_ERROR();
+    error Raffle_notEnoughTimePassed_ERROR();
 
-    // State Varables
+    // State Variables
     address payable[] private s_players; // This address can get paid
+    uint256 private s_lastTimeStamp;
 
     // Using Immutable to save gas will have value in it once deployed
     uint256 private immutable i_entranceFee;
 
-    
+    // @dev Duration of the lottery in seconds
+    uint256 private immutable i_interval;
 
-    constructor(uint256 fees){
+    // Events Here
+    event EnteredRaffle(address indexed player);
+
+    // On deployment of contract the contract owner should provide Fees required to enter in lottery and a thresold time so that winner can be picked.
+    constructor(uint256 fees, uint256 interval){
         i_entranceFee= fees;
+        i_interval = interval;
+        s_lastTimeStamp = block.timestamp;
     }
 
     function enterRaffle() external payable{
@@ -54,10 +63,28 @@ contract Raffle{
        if(msg.value < i_entranceFee){
         revert Raffle__notEnoughEth_ERROR();
        }
+       // Storage Update here
        s_players.push(payable(msg.sender));
+       // Whenever We do storage update we should emit event
+       // Why? 1) Makes Migration of contracts easier 2) To index data on frontend
+
+        // Emitting here
+        emit EnteredRaffle(msg.sender); // Basically when someone enters raffle we will get notify over here
+
     }
 
-    function pickWinner() public{
+    // This function will be responsible for picking winner
+    function pickWinner() external {
+    /* Things to remember
+    // 1. Get a Random Number
+    // 2. Use the random Number to pick a player
+    // 3. Pick winner should get automatically called (Not manually) After particular time.
+    */
+
+    // check to see if enough time has passed or not
+    if((block.timestamp - s_lastTimeStamp) < i_interval){
+        revert Raffle_notEnoughTimePassed_ERROR(); // Patrick Havent refracted it yet
+    }
 
     }
 
