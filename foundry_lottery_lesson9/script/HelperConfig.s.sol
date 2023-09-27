@@ -2,6 +2,7 @@
 
 import {Script} from "forge-std/Script.sol";
 import {VRFCoordinatorV2Mock} from "@chainlink/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol";
+import {LinkToken} from "../test/mocks/LinkToken.sol";
 
 pragma solidity ^0.8.18;
 
@@ -24,6 +25,7 @@ contract HelperConfig is Script{
         bytes32 gasLane;
         uint64 subscriptionId;
         uint32 callBackGasLimit;
+        address linkToken ;
     }
 
     function getSepoliaEthConfig() public pure returns(NetworkConfig memory){
@@ -32,8 +34,9 @@ contract HelperConfig is Script{
             interval: 30,
             vrfCoordinatorAddr: 0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625,
             gasLane: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
-            subscriptionId: 0,// Update this Later
-            callBackGasLimit: 500000// 500,000 gas
+            subscriptionId: 1893,// Update this Later
+            callBackGasLimit: 500000,// 500,000 gas
+            linkToken: 0x779877A7B0D9E8603169DdbD7836e478b4624789
         });
     }
 
@@ -41,6 +44,8 @@ contract HelperConfig is Script{
         if(activeNetworkConfig.vrfCoordinatorAddr != address(0)){
             return activeNetworkConfig;
         }
+
+        LinkToken linkToken = new LinkToken();
 
         uint96 baseFee = 0.25 ether;
         uint96 gasPriceLink = 1e9;
@@ -53,8 +58,9 @@ contract HelperConfig is Script{
             interval: 30,
             vrfCoordinatorAddr: address(vrfCoodinatorMock),
             gasLane: 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c,
-            subscriptionId: 0,// Out Script will add this
-            callBackGasLimit: 500000// 500,000 gas
+            subscriptionId: 0,// Our Script will add this
+            callBackGasLimit: 500000,// 500,000 gas
+            linkToken: address(linkToken)
         });
     }
 }
