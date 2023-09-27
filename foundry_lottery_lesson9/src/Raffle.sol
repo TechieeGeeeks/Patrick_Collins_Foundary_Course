@@ -49,7 +49,11 @@ contract Raffle is VRFConsumerBaseV2 {
     error Raffle__notEnoughTimePassed_ERROR();
     error Raffle__TransferFailed();
     error Raffle__RaffleNotOpen();
-    error Raffle__UpkeepNotNeeded(uint256 currentBalance, uint256 numPlayers, uint256 raffleState);
+    error Raffle__UpkeepNeeded(
+        uint256 currentBalance,
+        uint256 numPlayers,
+        uint256 raffleState
+    );
 
     /* Enums here */
     // Enum => We needed it cause suppose that we want to pick a winner
@@ -95,6 +99,7 @@ contract Raffle is VRFConsumerBaseV2 {
     // Events Here
     event EnteredRaffle(address indexed player);
     event PickedWinner(address indexed winner);
+    event reuestedRaffleWinner(uint256 indexed requesId);
 
     constructor(
         uint256 fees,
@@ -119,7 +124,7 @@ contract Raffle is VRFConsumerBaseV2 {
         if (msg.value < i_entranceFee) {
             revert Raffle__notEnoughEth_ERROR();
         }
-        if(s_raffleState != RaffleState.OPEN){
+        if (s_raffleState != RaffleState.OPEN) {
             revert Raffle__RaffleNotOpen();
         }
         // Storage Update here
@@ -133,16 +138,17 @@ contract Raffle is VRFConsumerBaseV2 {
 
     /**
      * @dev This is the function that the chainlink automation node will check if its time to perform an upkeep or not
-     * 
-     * The Following things should be true to return upkeepNeeded = true cause 
+     *
+     * The Following things should be true to return upkeepNeeded = true cause
      * 1. The time interval has passed between raffle runs
      * 2. The raffle should be in OPEN state
      * 3. The contract has ETH (Enough Players)
      * 4. The subscription should be funded with LINKS(IMPLICIT)
      * @return upKeepNeeded = true
      */
-    function checkUpkeep(bytes memory /* checkData */)public view returns(bool upKeepNeeded, bytes memory /*performData */){
-
+    function checkUpkeep(
+        bytes memory /* checkData */
+    ) public view returns (bool upKeepNeeded, bytes memory /*performData */) {
         // 1. check to see if The time interval has passed between raffle runs
         bool timeHasPassed = (block.timestamp - s_lastTimeStamp) >= i_interval;
 
@@ -151,37 +157,36 @@ contract Raffle is VRFConsumerBaseV2 {
 
         // 3. check to see if contract has ETH (Enough Players)
         bool hasBalance = address(this).balance > 0;
-        bool hasPlayers = s_players.length>0;
+        bool hasPlayers = s_players.length > 0;
 
         upKeepNeeded = (timeHasPassed && isOPen && hasBalance && hasPlayers);
-        return(upKeepNeeded,"0x0"); // 0x0 tells that its blank
-    } 
+        return (upKeepNeeded, "0x0"); // 0x0 tells that its blank
+    }
 
     // This function will be responsible for picking winner
     function performUpkeep(bytes calldata /* performData */) external {
-    // Checks
-    /* Things to remember
+        // Checks
+        /* Things to remember
     // 1. Get a Random Number
     // 2. Use the random Number to pick a player
     // 3. Pick winner should get automatically called (Not manually) After particular time.
     */
 
-    (bool upKeepNeeded, ) = checkUpkeep("");
-    if(!upKeepNeeded){
-        revert Raffle__UpkeepNotNeeded(
-            address (this).balance,
-            s_players.length,
-            uint256(s_raffleState)
-        );
-    }
+        (bool upKeepNeeded, ) = checkUpkeep("");
+        if (!upKeepNeeded) {
+            revert Raffle__UpkeepNeeded(
+                address(this).balance,
+                s_players.length,
+                uint256(s_raffleState)
+            );
+        }
 
         // check to see if enough time has passed or not
         if ((block.timestamp - s_lastTimeStamp) < i_interval) {
             revert Raffle__notEnoughTimePassed_ERROR(); // Patrick Havent refracted it yet
         }
-       
 
-        // Effects 
+        // Effects
 
         s_raffleState = RaffleState.CALCULATING;
         // Will revert if subscription is not set and funded.
@@ -191,16 +196,17 @@ contract Raffle is VRFConsumerBaseV2 {
         1. Requesting a Random Number
         2. Getting the Random Number <- its a callback function 
         */
-        /* uint256 requestId = */i_vrfCoordinator.requestRandomWords( // each chain has its own chainlink coordinator address where you can request the random number via contract address
+        /* uint256 requestId = */uint256 requestId=  i_vrfCoordinator.requestRandomWords( // each chain has its own chainlink coordinator address where you can request the random number via contract address
             i_gasLane, // gas lane
             i_subscriptionId, // The id which you funded with link tokens to make this request
             REUEST_CONFIRMATIONS, // The no of blocks confiemstions that you want to wait before actually receiving number
             i_callBackGasLimit, // To make sure taht we dont spread extra money on gas
             NUM_WORDS // No of random numbers you need
         );
+        emit reuestedRaffleWinner(requestId);
     }
 
-    // As we are overriding interface(Just telling us to implment this function) this function will be called by vrf coordinator in our contract only 
+    // As we are overriding interface(Just telling us to implment this function) this function will be called by vrf coordinator in our contract only
     function fulfillRandomWords(
         uint256 /*requestId*/,
         uint256[] memory randomWords
@@ -209,23 +215,28 @@ contract Raffle is VRFConsumerBaseV2 {
         uint256 indexOfWinner = randomWords[0] % s_players.length;
         address payable winner = s_players[indexOfWinner];
         s_recentWinner = winner;
-        s_raffleState =RaffleState.OPEN;
+        s_raffleState = RaffleState.OPEN;
         s_players = new address payable[](0); // The small (0) tells that we gonna start at address 0
         s_lastTimeStamp = block.timestamp;
         emit PickedWinner(winner);
         (bool sucess, ) = winner.call{value: address(this).balance}("");
         if (!sucess) {
             revert Raffle__TransferFailed();
-        }   
+        }
     }
 
-    /** Getter Function  */
+    /** Getter Function for accessing fees */
     function getEntraceFee() external view returns (uint256) {
         return i_entranceFee;
     }
 
-    /** Getter Function  */
+    /** Getter Function for accessing Raffle state */
     function getRaffleState() external view returns (RaffleState) {
         return s_raffleState;
+    }
+
+    /** Getter Function for accessing Raffle state */
+    function getPlayer(uint256 indexOfPlayer) external view returns (address) {
+        return s_players[indexOfPlayer];
     }
 }
