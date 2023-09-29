@@ -270,7 +270,8 @@ contract RaffleTest is Test {
             address(raffle)
         );
 
-        bytes32 bytes32Value = entries[2].topics[1];
+        Vm.Log[] memory entries1 = vm.getRecordedLogs();
+        bytes32 bytes32Value = entries1[0].topics[1];
         address addressValue = address(uint160(uint256(bytes32Value)));
         // console.log("addressValue:", addressValue);
         // console.log(raffle.getRecentWinner(),"Expected Winner");
@@ -279,7 +280,7 @@ contract RaffleTest is Test {
         assert(raffle.getRecentWinner() != address(0));
         assert(raffle.getPlayersLength() == 0);
         assert(previousTimeStamp < raffle.getLastTimeStamp());
-        // assert(raffle.getRecentWinner()==recentEmittedWinner);
+        assert(raffle.getRecentWinner()==addressValue);
         assert(
             raffle.getRecentWinner().balance ==
                 STARTING_USER_BALANCE + prize - fees
