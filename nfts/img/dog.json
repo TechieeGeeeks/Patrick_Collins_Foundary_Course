@@ -1,0 +1,15 @@
+{
+    "name": "Swayam's Dog",
+    "Description": "It is Swayam's dog NFT created while learning NFT",
+    "image":"https://ipfs.io/ipfs/QmUPjADFGEKmfohdTaNcWhp7VGk26h5jXDA7v3VtTnTLcW?filename=st-bernard.png",
+    "attributes" : [
+        {
+            "trait_type": "Cuteness",
+            "value": 100
+        },
+        {
+            "Move": "Bonk",
+            "value": 100
+        }
+    ]
+}
