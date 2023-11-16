@@ -31,3 +31,6 @@
 [submodule "stableCoin/lib/openzeppelin-contracts"]
 	path = stableCoin/lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "stableCoin/lib/chainlink-brownie-contracts"]
+	path = stableCoin/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
