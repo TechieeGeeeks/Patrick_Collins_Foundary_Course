@@ -28,7 +28,7 @@ pragma solidity ^0.8.18;
 import {ERC20Burnable, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-/*
+/** 
  * @title DecentralizedStableCoin
  * @author DevSwayam
  * Collateral: Exogenous
@@ -41,11 +41,12 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract DecentralizedStableCoin is ERC20Burnable, Ownable{
 
+    /** Errors */
     error DecentralizedStableCoin_MustBeMoreThanZero();
     error DecentralizedStableCoin_BurnAmountExceedsBalance();
     error DecentralizedStableCoin_AddressCannotBeEqualToZero();
 
-    constructor()ERC20("DecrentalizedStableCoin", "DSC")Ownable(0x017c6CdD043aEF7e3F4400362CbE0dE0D2Cfd050){}
+    constructor()ERC20("DecrentalizedStableCoin", "DSC"){}
 
     function burn(uint256 _amount) public override onlyOwner{
         uint256 balance = balanceOf(msg.sender);
