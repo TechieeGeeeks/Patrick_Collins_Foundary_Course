@@ -20,12 +20,13 @@ contract DSCEngineTest is Test {
     address wBtc;
     address public user = makeAddr("Swayam");
     uint256 public constant AMOUNT_COLLATERAL = 10 ether;
-
+    uint256 public constant STARTING_ERC20_BALANCE = 10 ether;
 
     function setUp() public {
         deployer = new DeployDSC();
         (dsc, dsce, config) = deployer.run();
         (wEthUsdPriceFeed, wBtcUsdPriceFeed, wEth, wBtc,) = config.activeNetworkConfig();
+        ERC20Mock(wEth).mint(user,STARTING_ERC20_BALANCE);
     }
 
     /**
