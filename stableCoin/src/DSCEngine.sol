@@ -112,9 +112,20 @@ contract DSCEngine is ReentrancyGuard {
 
         for (uint256 i = 0; i < tokenAddresses.length; i++) {
             s_priceFeeds[tokenAddresses[i]] = priceFeedAddresses[i];
-            s_collateralTokens.push(priceFeedAddresses[i]);
+            s_collateralTokens.push(tokenAddresses[i]);
         }
         i_dsc = DecentralizedStableCoin(dscAddress);
+    }
+
+    /**
+     * Getter Functions
+     */
+    function getTotalCollateralDeposited(address user, address collateralTokenAddress)
+        external
+        view
+        returns (uint256)
+    {
+        return (s_collateralDeposited[user][collateralTokenAddress]);
     }
 
     /**
@@ -122,8 +133,8 @@ contract DSCEngine is ReentrancyGuard {
      */
     function getAccountCollateralValue(address user) public view returns (uint256 totalCollateralValueInUsd) {
         // loop through each collateral token and get the amount they have deposited to and map it to the price to get the USD value
-        for (uint256 i = 0; i < s_collateralTokens.length; i++) {
-            address token = s_collateralTokens[i];
+       for (uint256 index = 0; index < s_collateralTokens.length; index++) {
+            address token = s_collateralTokens[index];
             uint256 amount = s_collateralDeposited[user][token];
             totalCollateralValueInUsd += getUsdValueOfToken(token, amount);
         }
@@ -131,16 +142,16 @@ contract DSCEngine is ReentrancyGuard {
     }
 
     function getUsdValueOfToken(address token, uint256 amount) public view returns (uint256) {
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeeds[token]);
+         AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeeds[token]);
         (, int256 price,,,) = priceFeed.latestRoundData();
-        return (uint256(uint256(price) * ADDITIONAL_FEED_PRECISION) * amount) / PRECISION;
+        // 1 ETH = 1000 USD
+        // The returned value from Chainlink will be 1000 * 1e8
+        // Most USD pairs have 8 decimals, so we will just pretend they all do
+        // We want to have everything in terms of WEI, so we add 10 zeros at the end
+        return ((uint256(price) * ADDITIONAL_FEED_PRECISION) * amount) / PRECISION;
     }
 
-    function _getTokenAmountFromUsd(address collateralToken, uint256 usdDebtAmountInWei)
-        public
-        view
-        returns (uint256)
-    {
+    function getTokenAmountFromUsd(address collateralToken, uint256 usdDebtAmountInWei) public view returns (uint256) {
         AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeeds[collateralToken]);
         (, int256 price,,,) = priceFeed.latestRoundData();
         return (usdDebtAmountInWei * PRECISION) / (uint256(price) * ADDITIONAL_FEED_PRECISION);
@@ -252,7 +263,7 @@ contract DSCEngine is ReentrancyGuard {
         if (startingUserHealthFactor >= MIN_HEALTH_FACTOR) {
             revert DSCEngine_HealthFactorIsGood();
         }
-        uint256 tokenAmountFromDebtCovered = _getTokenAmountFromUsd(tokenCollateralAddress, debtToCover);
+        uint256 tokenAmountFromDebtCovered = getTokenAmountFromUsd(tokenCollateralAddress, debtToCover);
 
         // 10% bonus
         uint256 bonusCollateral = (tokenAmountFromDebtCovered * LIQUIDATION_BONUS) / LIQUIDATION_PRECISION;
@@ -327,5 +338,13 @@ contract DSCEngine is ReentrancyGuard {
             revert DSCEngine_TokenTransferFailed();
         }
         i_dsc.burn(amountDscToBurn);
+    }
+
+     function getAccountInformation(address user)
+        external
+        view
+        returns (uint256 totalDscMinted, uint256 collateralValueInUsd)
+    {
+        return _getAccountInformation(user);
     }
 }
