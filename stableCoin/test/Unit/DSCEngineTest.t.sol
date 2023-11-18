@@ -99,33 +99,24 @@ contract DSCEngineTest is Test {
         vm.stopPrank();
     }
 
-    function testWillRevertIfWeHaveOnlyDepositedOneTokenAndTriedToCallGetAccountCollateralValue() public {
-        vm.startPrank(user);
-        ERC20Mock(wEth).approve(address(dsce),AMOUNT_COLLATERAL);
-        dsce.depositCollateral(wEth,AMOUNT_COLLATERAL);
-        vm.expectRevert();
-        dsce.getAccountCollateralValue(user);
-        vm.stopPrank();
-    }
-
-    /* function testGetAccountCollateralValue() public {
+     function testGetAccountCollateralValue() public {
         vm.startPrank(user);
         ERC20Mock(wEth).approve(address(dsce),AMOUNT_COLLATERAL);
         ERC20Mock(wBtc).approve(address(dsce),AMOUNT_COLLATERAL);
         dsce.depositCollateral(wEth,AMOUNT_COLLATERAL);
         dsce.depositCollateral(wBtc,AMOUNT_COLLATERAL);
-        uint256 expectedValue = (AMOUNT_COLLATERAL*2000*1e18)+(AMOUNT_COLLATERAL*1000*1e18);
+        uint256 expectedValue = (AMOUNT_COLLATERAL*2000)+(AMOUNT_COLLATERAL*1000);
         uint256 actualValue = dsce.getAccountCollateralValue(user);
         assertEq(expectedValue,actualValue);
         vm.stopPrank();
     }
-*/
+
     function testCanDepositCollateralAndGetAccountInfo() public depositCollateral{
         (uint256 totalDscMinted, uint256 collateralValue) = dsce.getAccountInformation(user);
         uint256 expectedDscMinted = 0;
         uint256 actualCollateralValueInUsd = dsce.getTokenAmountFromUsd(wEth,collateralValue);
         assertEq(totalDscMinted,expectedDscMinted);
-        assertEq(actualCollateralValueInUsd,collateralValue);
+        assertEq(actualCollateralValueInUsd,AMOUNT_COLLATERAL);
     }
     
 }
