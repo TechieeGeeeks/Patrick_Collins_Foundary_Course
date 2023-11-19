@@ -6,3 +6,5 @@
 3. Collateral: Exogenous (Crypto)
    1. ETH
    2. BTC
+
+// Includes Fuzz tests and StableCoin Logic
