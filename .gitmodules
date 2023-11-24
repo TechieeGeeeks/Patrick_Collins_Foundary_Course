@@ -34,3 +34,15 @@
 [submodule "stableCoin/lib/chainlink-brownie-contracts"]
 	path = stableCoin/lib/chainlink-brownie-contracts
 	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
+[submodule "Contract_Upgrades/lib/forge-std"]
+	path = Contract_Upgrades/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "Contract_Upgrades/lib/openzeppelin-contracts-upgradeable"]
+	path = Contract_Upgrades/lib/openzeppelin-contracts-upgradeable
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable
+[submodule "Contract_Upgrades/lib/openzeppelin-contracts"]
+	path = Contract_Upgrades/lib/openzeppelin-contracts
+	url = https://github.com/Openzeppelin/openzeppelin-contracts
+[submodule "Contract_Upgrades/lib/foundry-devops"]
+	path = Contract_Upgrades/lib/foundry-devops
+	url = https://github.com/chainaccelorg/foundry-devops
