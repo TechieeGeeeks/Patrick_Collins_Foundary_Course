@@ -46,3 +46,9 @@
 [submodule "Contract_Upgrades/lib/foundry-devops"]
 	path = Contract_Upgrades/lib/foundry-devops
 	url = https://github.com/chainaccelorg/foundry-devops
+[submodule "DaosAndGovernance/lib/forge-std"]
+	path = DaosAndGovernance/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "DaosAndGovernance/lib/openzeppelin-contracts"]
+	path = DaosAndGovernance/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
