@@ -55,3 +55,6 @@
 [submodule "Ethernauts/lib/forge-std"]
 	path = Ethernauts/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "Thunder-Loan-Audit/lib/forge-std"]
+	path = Thunder-Loan-Audit/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
