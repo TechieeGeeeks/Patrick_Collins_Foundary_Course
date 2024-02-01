@@ -58,3 +58,9 @@
 [submodule "Thunder-Loan-Audit/lib/forge-std"]
 	path = Thunder-Loan-Audit/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "Thunder-Loan-Audit/lib/openzeppelin-contracts"]
+	path = Thunder-Loan-Audit/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "Thunder-Loan-Audit/lib/openzeppelin-contracts-upgradeable"]
+	path = Thunder-Loan-Audit/lib/openzeppelin-contracts-upgradeable
+	url = https://github.com/openzeppelin/openzeppelin-contracts-upgradeable
