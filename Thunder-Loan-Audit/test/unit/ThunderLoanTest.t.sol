@@ -87,4 +87,23 @@ contract ThunderLoanTest is BaseTest {
         assertEq(mockFlashLoanReceiver.getBalanceDuring(), amountToBorrow + AMOUNT);
         assertEq(mockFlashLoanReceiver.getBalanceAfter(), AMOUNT - calculatedFee);
     }
+
+    function testRedeemAfterLoan() public setAllowedToken hasDeposits {
+        uint256 amountToBorrow = AMOUNT * 10;
+        uint256 calculatedFee = thunderLoan.getCalculatedFee(tokenA, amountToBorrow);
+        
+        vm.startPrank(user);
+        tokenA.mint(address(mockFlashLoanReceiver), calculatedFee);
+        thunderLoan.flashloan(address(mockFlashLoanReceiver), tokenA, amountToBorrow, "");
+        vm.stopPrank();
+
+        vm.startPrank(liquidityProvider);
+        thunderLoan.redeem(tokenA,type(uint256).max);
+        vm.stopPrank();
+    }
+    // Tokens Deposited by Liquidity Provider 1000,000000000000000000
+    // We calculated the exchange rate and then we got the fees of 3e15 which is 0000,003000000000000000. new fees 1e18 + 3e15 is 1003e15
+    // Now someone came and took flashloan he needs to pay 3% of loan he took 100e18 hence he paid abck 100e18 + additional fee of 100                     1.003e18      
+    //1000.300000000000000000
+    //1003.300900000000000000
 }

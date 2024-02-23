@@ -88,6 +88,8 @@ contract AssetToken is ERC20 {
         // newExchangeRate = 1.125
         uint256 newExchangeRate = s_exchangeRate * (totalSupply() + fee) / totalSupply();
 
+                        // (1.003 * 1000.3e18 )/1000e18 = 1.003300900000000000e18
+                        //                                1.003300900000000000
         if (newExchangeRate <= s_exchangeRate) {
             revert AssetToken__ExhangeRateCanOnlyIncrease(s_exchangeRate, newExchangeRate);
         }
