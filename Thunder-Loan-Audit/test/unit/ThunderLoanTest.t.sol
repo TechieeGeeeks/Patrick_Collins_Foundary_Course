@@ -251,4 +251,3 @@ contract MailiciousFlashLoanReceiver is IFlashLoanReceiver {
         return true;
     }
 }
-// 0.987158034397061298
