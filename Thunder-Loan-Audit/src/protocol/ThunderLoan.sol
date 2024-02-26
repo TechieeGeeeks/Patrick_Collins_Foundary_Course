@@ -96,6 +96,7 @@ contract ThunderLoan is Initializable, OwnableUpgradeable, UUPSUpgradeable, Orac
     // The fee in WEI, it should have 18 decimals. Each flash loan takes a flat fee of the token price.
     uint256 private s_feePrecision;
     uint256 private s_flashLoanFee; // 0.3% ETH fee
+    // 0.296147410319118389
 
     mapping(IERC20 token => bool currentlyFlashLoaning) private s_currentlyFlashLoaning;
 
