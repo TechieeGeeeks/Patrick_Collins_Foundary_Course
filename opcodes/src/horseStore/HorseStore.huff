@@ -1,0 +1,8 @@
+
+// Entry Point of Code
+
+#define macro MAIN() = takes(0) returns(0) {
+    
+}
+
+// 60008060093d393df3
