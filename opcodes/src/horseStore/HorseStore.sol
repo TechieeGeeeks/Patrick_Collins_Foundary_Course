@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity 0.8.20;
 
 contract HorseStore {
     uint256 numberOfHorses;
@@ -8,7 +8,7 @@ contract HorseStore {
         numberOfHorses = newNumberOfHorses;
     }
 
-    function readNoOfHorses() external view returns (uint256) {
+    function readNumberOfHorses() external view returns (uint256) {
         return numberOfHorses;
     }
 }
