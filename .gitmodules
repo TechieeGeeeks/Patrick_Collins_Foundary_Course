@@ -70,3 +70,9 @@
 [submodule "opcodes/lib/foundry-huff"]
 	path = opcodes/lib/foundry-huff
 	url = https://github.com/huff-language/foundry-huff
+[submodule "opcodes/lib/openzeppelin-contracts"]
+	path = opcodes/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "opcodes/lib/huffmate"]
+	path = opcodes/lib/huffmate
+	url = https://github.com/huff-language/huffmate
