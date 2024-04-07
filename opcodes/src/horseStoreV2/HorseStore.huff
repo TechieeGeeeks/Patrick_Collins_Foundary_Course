@@ -1,0 +1,82 @@
+
+// Imports
+#include "../../lib/huffmate/src/data-structures/Hashmap.huff"
+
+// Interface
+#define function mintHorse() nonpayable returns()
+#define function feedHorse(uint256) nonpayable returns()
+#define function isHappyHorse(uint256) nonpayable returns(bool)
+#define function horseIdToFedTimeStamp(uint256) nonpayable returns(uint256)
+#define function HORSE_HAPPY_IF_FED_WITHIN() nonpayable returns(uint256)
+
+//Storage Slots
+#define constant HORSE_FED_TIME_LOCATION = FREE_STORAGE_POINTER()
+#define constant HORSE_HAPPY_IF_FED_WITHIN = 0x0000000000000000000000000000000000000000000000000000000000015180
+
+#define macro FEED_HORSE() = takes(0) returns(0){
+    timestamp 
+    0x04 calldataload 
+    [HORSE_FED_TIME_LOCATION]
+    STORE_ELEMENT_FROM_KEYS(0x00)
+    stop
+}
+
+#define macro GET_HORSE_FED_TIMESTAMP() = takes(0) returns(0){
+    0x04 calldatalaod 
+    [HORSE_FED_TIME_LOCATION] 
+    LOAD_ELEMENT_FROM_KEYS(0x00) 
+    0x00 mstore
+    0x20 0x00 return
+}
+
+#define macro IS_HAPPY_HORSE() = takes(0) returns(0){
+    0x04 calldataload
+    [HORSE_FED_TIME_LOCATION]
+    LOAD_ELEMENT_FROM_KEYS(0x00)
+    timestamp
+    dup2 dup2
+    sub 
+    [HORSE_HAPPY_IF_FED_WITHIN]
+    gt
+    start_return_true jumpi
+    eq
+    start_return
+    jump
+
+
+    start_return_true:
+    0x01
+
+    start_return:
+    0x00 mstore
+    0x20 0x00 return
+}
+
+#define macro MAIN() = takes(0) returns(0) {
+    0x00 calldatalaod 0xE0 shr
+
+    /* Function Selectors
+        mintHorse() => 
+        feedHorse(uint256) => 
+        isHappyHorse(uint256) => 
+        horseIdToFedTimeStamp(uint256) =>
+        HORSE_HAPPY_IF_FED_WITHIN() =>
+    */ 
+
+    dup1 __FUNC_SIG(mintHorse) eq mintHorse jumpi
+    dup1 __FUNC_SIG(feedHorse) eq feedHorse jumpi
+    dup1 __FUNC_SIG(isHappyHorse) eq isHappyHorse jumpi
+    dup1 __FUNC_SIG(horseIdToFedTimeStamp) eq horseIdToFedTimeStamp jumpi
+    dup1 __FUNC_SIG(HORSE_HAPPY_IF_FED_WITHIN) eq horseIdIfFedWithin jumpi
+
+    mintHorse:
+        MINT_HORSE()
+    feedHorse: 
+        FEED_HORSE()
+    isHappyHorse: 
+        IS_HAPPY_HORSE() 
+    horseIdToFedTimeStamp:
+        GET_HORSE_FED_TIMESTAMP()
+    horseIdIfFedWithin:
+        HORSE_HAPPY_IF_FED_WITHIN()
+}
